@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+
+{% block main_content %}
+        <ul class="list-group">
+           <li class="list-group-item active">主题列表</li>
+           {% for thread in post %}
+           <li class="list-group-item"><a class="text-muted" href="{% url 'showthread' thread.id %}">{{ thread.title }}</a><span class="label label-default">Label</span><span class="badge">新</span></li>
+           {% endfor %}
+        </ul>
+
+        <ul class="pagination">
+       	<li><a href="#">&laquo;</a></li>
+		  <li><a href="#">1</a></li>
+		  <li><a href="#">2</a></li>
+		  <li><a href="#">3</a></li>
+		  <li><a href="#">4</a></li>
+		  <li><a href="#">5</a></li>
+		  <li><a href="#">6</a></li>
+		  <li><a href="#">7</a></li>
+		  <li><a href="#">8</a></li>
+		  <li><a href="#">9</a></li>
+		  <li><a href="#">10</a></li>
+		  <li><a href="#">&raquo;</a></li>
+		</ul>
+{% endblock %}
+

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% load gravatar %}
+{% block main_content %}
+<div class="panel panel-default hentry">
+  <div class="panel-heading">
+      <div class="vcard" style="float:left;margin-right:15px;">
+        <a href="{% url "userhomepaging" author.username 1 %}">
+          {{user.email}}
+          <img src="{% gravatar_url 'lzgcucool@gmail.com' %}" width="38" height="38" alt="">
+        </a>
+      </div>
+      <div class="entry-meta-wrapper">
+        <h2 class="panel-title entry-title">{{ post.title }}</h2>
+
+        <div class="entry-meta text-muted">
+          <a href="{% url "userhomepaging" author.username 1 %}" title="{{author.username}}">{{author.username}}</a>
+          <span class="sep">•</span>
+          <time datetime="2012-08-17T06:21:41Z" pubdate="">{{post.postime}}</time>
+          <span class="sep">•</span>
+          {% if post.click %}
+          {{post.click}} Hits
+          {% else %}
+          0 Hits
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="panel-body entry-content">
+      {% autoescape off %}
+      {{ post.content }}
+      {% endautoescape %}
+    </div>
+
+
+</div>
+    <div class="panel panel-default">
+    <div class="panel-heading">
+      8 comments
+    </div>
+    <div class="panel-columns comments">
+          {% for com in commit %}
+          <div class="item comment">
+            <a class="avatar" href="/user/fengluo" title="fengluo"><img src="https://secure.gravatar.com/avatar/08522ef89ebc3b53ffdf3bac9b6e53ea?s=42"></a>
+            <div class="main">
+              <div class="author">
+                <a href="/user/fengluo" title="{{com.username}}">{{com.username}}</a>
+                <time datetime="2012-08-17T07:01:21Z" pubdate="">{{com.postime}}</time>
+              </div>
+              <div class="content"><p>{{com.content}}</p></div>
+              <div class="action clearfix">
+                <a class="reply" href="#fengluo">Reply</a>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+          <div class="item comment">
+            <a class="avatar" href="/user/jg87" title="jg87"><img src="https://secure.gravatar.com/avatar/e0d208e961cd3c8d2a2a6f7dde6660aa?s=42"></a>
+            <div class="main">
+              <div class="author">
+                <a href="/user/jg87" title="jg87">jg87</a>
+                <time datetime="2012-08-18T08:31:12Z" pubdate="">2 年前</time>
+              </div>
+              <div class="content"><p><a href="/user/whtsky">@whtsky</a> 不是非得,只是想看看,flask相比别的framework更适合什么样地应用.</p></div>
+              <div class="action clearfix">
+                <a class="reply" href="#jg87">Reply</a>
+              </div>
+            </div>
+          </div>
+          <div class="item comment">
+            <a class="avatar" href="/user/hbc" title="hbc"><img src="https://secure.gravatar.com/avatar/10d3f29b5415288ca0cd9f2194f95388?s=42"></a>
+            <div class="main">
+              <div class="author">
+                <a href="/user/hbc" title="hbc">hbc</a>
+                <time datetime="2012-08-18T14:38:34Z" pubdate="">2 年前</time>
+              </div>
+              <div class="content"><p><a href="/user/whtsky">@whtsky</a> 不能这么简单吧， 如果真的能 1M pageviews a month framework 的性能就很重要了</p></div>
+              <div class="action clearfix">
+                <a class="reply" href="#hbc">Reply</a>
+              </div>
+            </div>
+          </div>
+    </div>
+  </div>
+
+
+  <div class="panel panel-default">
+      <form class="form panel-body comment-form" id="writecommitform">
+        {% csrf_token %}
+        <input type="hidden" name="title" value="回复：{{post.title}}" />
+        <input type="hidden" name="thread_id" value="{{post.id}}" />
+        <input type="hidden" name="user_id" value="{{user.id}}" />
+          <div class="form-group ">
+            <label class="sr-only" for="content">内容</label>
+            <textarea class="form-control" id="content" name="content"></textarea>
+          </div>
+        <div class="text-right">
+          <button type="button" onclick="towritenew('#writecommitform')" class="btn btn-success">评论</button>
+        </div>
+      </form>
+  </div>
+{% endblock %}

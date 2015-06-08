@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../../favicon.ico">
+    <title>Jumbotron Template for Bootstrap</title>
+    {% csrf_token %}
+    <!-- Bootstrap core CSS -->
+    {% load staticfiles %}
+    <link href="{% static 'bootstrap-3.3.4-dist/css/bootstrap.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'bootstrap-3.3.4-dist/css/minforums.css' %}" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="{% static 'bootstrap-3.3.4-dist/js/ie-emulation-modes-warning.js' %}"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <style type="text/css">
+  .panel-columns .item {position: relative;border-bottom: 1px solid #ddd;padding: 8px 10px 6px;zoom: 1;}
+  .comment {line-height: 1;}
+  .panel-columns .item .main {overflow: hidden;}
+  .comment .author {margin-bottom: 6px;}
+  .panel-columns .item .avatar {float: left;margin-right: 14px;}
+  .main a {word-break: break-all;}
+  .panel-columns .item .avatar img {border-radius: 3px;}
+  .comment .content {color: #555;line-height: 1.4;}
+  .comment .action {position: absolute;top: 10px;right: 10px;}
+  .comment .action a {margin-right: 4px;font-size: 12px; color: rgba(0,0,0,0.3);}
+  .comment time {font-size: 13px;color: rgba(0,0,0,0.4);}
+  </style>
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="{% url 'homepage' %}">Minforums</a>
+          <a class="navbar-brand" href="{% url 'homepage' %}">成员</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          {% if not user %}
+          <form class="navbar-form navbar-right" id="actiontologin">
+            {% csrf_token %}
+            <div class="form-group">
+              <input type="text" name="email" id="login_email" placeholder="Email" class="form-control">
+            </div>
+            <div class="form-group">
+              <input type="password" name="password" id="login_password" placeholder="Password" class="form-control">
+            </div>
+            <button type="button" onclick="tologin()" class="btn btn-success">Sign in</button>
+            <button type="button" data-toggle="modal" data-backdrop="static" data-target="#signuphidefrom" class="btn btn-primary">Sign Up</button>
+          </form>
+          {% else %}
+          <ul class="nav navbar-nav navbar-right">
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ user.username }} <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a href="/account/setpassword">修改密码</a></li>
+                  <li><a href="javascript:;" onclick="checklogout();">退出登录</a></li>
+                </ul>
+              </li>
+            </ul>
+          {% endif %}
+        </div><!--/.navbar-collapse -->
+      </div>
+    </nav>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-9">{% block main_content %}{% endblock %}</div>
+          <div class="col-md-3">
+            <div class="list-group">
+                 <li class="list-group-item active">
+                    <h4 class="list-group-item-heading">
+                       会员
+                    </h4>
+                 </li>
+                 <li class="list-group-item">
+                    {% if not user %}
+                    <p class="list-group-item-text">
+                       <button type="button" class="btn btn-success">注册会员</button>
+                       <button type="button" class="btn btn-success">忘记密码?</button>
+                    </p>
+                    {% else %}
+                    <p class="list-group-item-text">
+                       <button type="button" data-toggle="modal" data-backdrop="static" data-target="#writenew" class="btn btn-success">发表话题</button>
+                       <button type="button" onclick="location.href='{% url "userhomepaging" user.username 1 %}'" class="btn btn-success">我的话题</button>
+                    </p> 
+                    {% endif %}
+                 </li>
+            </div>
+            <div class="list-group">
+                 <li class="list-group-item active">
+                    <h4 class="list-group-item-heading">
+                       论坛统计
+                    </h4>
+                 </li>
+                 <li class="list-group-item">
+                    <p class="list-group-item-text">
+                       注册会员:15<br />
+                       发表主题:45<br />
+                       主题回复:139
+                    </p>
+                 </li>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="col-md-4">
+          <h2>关于我们</h2>
+          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+          <h2>联系方式</h2>
+          <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+       </div>
+        <div class="col-md-4">
+          <h2>隐私条列</h2>
+          <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+          <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+      </div>
+
+      <hr>
+
+      <footer>
+        <p>&copy; Company 2015</p>
+      </footer>
+    </div> <!-- /container -->
+
+    <div class="modal" id="signuphidefrom" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="exampleModalLabel">Sign Up</h4>
+          </div>
+          <div class="modal-body">
+            <form id="toregisterform">
+              {% csrf_token %}
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">Username:</label>
+                <input type="text" name="username" class="form-control" id="recipient-name">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">Password:</label>
+                <input type="password" name="password" class="form-control" id="recipient-name">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">Re-enter Password:</label>
+                <input type="password" name="repassword" class="form-control" id="recipient-name">
+              </div>
+              <div class="form-group">
+                <label for="recipient-name" class="control-label">E-mail:</label>
+                <input type="text" name="email" class="form-control" id="recipient-name">
+              </div>
+              <div class="form-group">
+                <label for="message-text" class="control-label">Profile:</label>
+                <textarea name="profile" class="form-control" id="message-text"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" onclick="toregister();" class="btn btn-success">Register</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal" id="writenew" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="exampleModalLabel">添加话题</h4>
+          </div>
+          <div class="modal-body">
+            <form id="writenewform">
+              {% csrf_token %}
+              <input type="hidden" name="thread_id" value="000000000000000000000000">
+              <input type="hidden" name="user_id" value="{{ user.id }}">
+              <div class="form-group">
+                <input placeholder="话题标题" type="text" name="title" class="form-control" id="recipient-name">
+              </div>
+              <div class="form-group">
+                <textarea style="height:230px;" placeholder="话题内容" name="content" class="form-control" id="message-text"></textarea>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" onclick="towritenew('#writenewform');" class="btn btn-success">Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="showalert">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Modal title</h4>
+          </div>
+          <div class="modal-body">
+            <p>One fine body&hellip;</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static 'bootstrap-3.3.4-dist/js/jquery.min.js' %}"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="{% static 'bootstrap-3.3.4-dist/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'bootstrap-3.3.4-dist/js/ie10-viewport-bug-workaround.js' %}"></script>
+    <script type="text/javascript">
+    function tologin(){
+      // var email = $('#login_email').val();
+      // var password = $('#login_email').val();
+      var poststr = $('#actiontologin').serialize();
+      // var csrfmiddlewaretoken = 
+      $.post('/account/login/',poststr,function(result){
+          if(result=='succeed'){
+            toalert('欢迎来到minforums!','登录系统成功');
+          }
+      });
+    } 
+    function toregister(){
+      var regstr = $('#toregisterform').serialize();
+      $.post('/account/register/',regstr,function(result){
+          if(result=='succeed'){
+            toalert('注册成功!','您已成为本论坛的一员!');
+          }
+      });
+    }
+    function towritenew(formdom){
+      var regstr = $(formdom).serialize();
+      $.post('/post/writethread/',regstr,function(result){
+          if(result!='failed'){
+            toalert('添加成功!',result);//'您发表的话题已经添加成功!'
+          }else{
+            toalert('添加失败!','添加话题标题不能重复！');
+          }
+      });
+    }
+    function checklogout(){
+      var path = '/account/logout/';
+      $.get(path,function(result){
+        if(result=='logout'){
+          toalert('退出成功','您已登出系统!');
+          localtion.href = '/';
+        }
+      });
+      return false
+    }
+    function toalert(title, content){
+      var obj = $('#showalert');
+      obj.find('.modal-title').html(title)
+      obj.find('.modal-body p').html(content)
+      obj.modal();
+    }
+    </script>
+  </body>
+</html>
